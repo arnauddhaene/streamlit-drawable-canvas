@@ -21,7 +21,7 @@ export interface PythonArgs {
   strokeWidth: number
   strokeColor: string
   backgroundColor: string
-  backgroundImage: Uint8ClampedArray
+  backgroundImageURL: string
   realtimeUpdateStreamlit: boolean
   canvasWidth: number
   canvasHeight: number
@@ -39,7 +39,7 @@ const DrawableCanvas = ({ args }: ComponentProps) => {
     canvasWidth,
     canvasHeight,
     backgroundColor,
-    backgroundImage,
+    backgroundImageURL,
     realtimeUpdateStreamlit,
     drawingMode,
     fillColor,
@@ -108,12 +108,12 @@ const DrawableCanvas = ({ args }: ComponentProps) => {
    * Update background image
    */
   useEffect(() => {
-    if (backgroundImage) {
-      const imageData = backgroundCanvas
-        .getContext()
-        .createImageData(canvasWidth, canvasHeight)
-      imageData.data.set(backgroundImage)
-      backgroundCanvas.getContext().putImageData(imageData, 0, 0)
+    if (backgroundImageURL) {
+      var bgImage = new Image();
+      bgImage.onload = function() {
+        backgroundCanvas.getContext().drawImage(bgImage, 0, 0);
+      };
+      bgImage.src =  backgroundImageURL;
     }
   }, [
     canvas,
@@ -121,7 +121,7 @@ const DrawableCanvas = ({ args }: ComponentProps) => {
     canvasHeight,
     canvasWidth,
     backgroundColor,
-    backgroundImage,
+    backgroundImageURL,
     saveState,
   ])
 
